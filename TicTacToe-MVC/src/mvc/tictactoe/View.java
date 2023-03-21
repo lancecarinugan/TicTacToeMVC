@@ -1,5 +1,6 @@
 package mvc.tictactoe;
 import com.mrjaffesclass.apcs.messenger.*;
+import javax.swing.JButton;
 /**
  * MVC Template
  * This is a template of an MVC framework used by APCS for the 
@@ -27,8 +28,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
    */
   public void init() {
     // Subscribe to messages here
-    mvcMessaging.subscribe("model:variable1Changed", this);
-    mvcMessaging.subscribe("model:variable2Changed", this);
+    mvcMessaging.subscribe("boardChange", this);
+    mvcMessaging.subscribe("gameOver", this);
   }
   
   @Override
@@ -38,10 +39,20 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     } else {
       System.out.println("MSG: received by view: "+messageName+" | No data sent");
     }
-    if (messageName.equals("model:variable1Changed")) {
-      jLabel8.setText(messagePayload.toString());
-    } else {
-      jLabel10.setText(messagePayload.toString());      
+    if (messageName.equals("boardChange")) {
+    // Get the message payload and cast it as a 2D string array since we
+    // know that the model is sending out the board data with the message
+      String[][] board = (String[][])messagePayload;
+    // Now set the button text with the contents of the board
+      jButton1.setText(board[0][0]);
+      jButton2.setText(board[0][1]);
+      jButton3.setText(board[0][2]);
+      jButton4.setText(board[1][0]);
+      jButton5.setText(board[1][1]);
+      jButton6.setText(board[1][2]);
+      jButton7.setText(board[2][0]);
+      jButton8.setText(board[2][1]);
+      jButton9.setText(board[2][2]);
     }
   }
 
@@ -52,10 +63,6 @@ public class View extends javax.swing.JFrame implements MessageHandler {
    * @param direction this.UP (1) or this.DOWN (-1), constants defined above
    * @return the HashMap payload to be sent with the message
    */
-  private MessagePayload createPayload(int fieldNumber, int direction) {
-    MessagePayload payload = new MessagePayload(fieldNumber, direction);
-    return payload;
-  }
 
   /**
    * This method is called from within the constructor to initialize the form.
@@ -76,65 +83,76 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel12.setText("jLabel12");
+        jLabel12.setText("TicTacToe");
 
-        jButton1.setText("jButton1");
         jButton1.setName("00"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                onClick(evt);
             }
         });
 
-        jButton2.setText("jButton2");
-        jButton2.setActionCommand("jButton2");
         jButton2.setName("10"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onClick(evt);
+            }
+        });
 
-        jButton3.setText("jButton3");
-        jButton3.setActionCommand("jButton3");
         jButton3.setName("20"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                onClick(evt);
             }
         });
 
-        jButton4.setText("jButton4");
-        jButton4.setActionCommand("jButton4");
         jButton4.setName("21"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onClick(evt);
+            }
+        });
 
-        jButton5.setText("jButton5");
-        jButton5.setActionCommand("jButton5");
         jButton5.setName("01"); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                onClick(evt);
             }
         });
 
-        jButton6.setText("jButton6");
-        jButton6.setActionCommand("jButton6");
         jButton6.setName("11"); // NOI18N
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                onClick(evt);
             }
         });
 
-        jButton7.setText("jButton7");
         jButton7.setName("02"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onClick(evt);
+            }
+        });
 
-        jButton8.setText("jButton8");
         jButton8.setName("12"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onClick(evt);
+            }
+        });
 
-        jButton9.setText("jButton9");
         jButton9.setName("22"); // NOI18N
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onClick(evt);
+            }
+        });
 
-        jTextField1.setText("jTextField1");
+        jLabel1.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,9 +169,9 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel12)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -163,16 +181,18 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                             .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel1)))
                 .addContainerGap(58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel12)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -194,27 +214,18 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                             .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void onClick(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onClick
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        JButton button = (JButton)evt.getSource();
+    this.mvcMessaging.notify("playerMove", button.getName());
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_onClick
 
   /**
    * @param args the command line arguments
@@ -230,7 +241,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
