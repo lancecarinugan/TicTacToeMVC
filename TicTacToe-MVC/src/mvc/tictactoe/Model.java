@@ -49,7 +49,49 @@ public class Model implements MessageHandler {
     }
     this.whoseMove = false;
     this.gameOver = false;
+    this.mvcMessaging.notify("turnChange", this.whoseMove);
   }
+  
+  private void isWinner() {
+  int count = 0;
+  // Check Rows
+  for (String[] rows : this.board) {
+      count = 0;
+      for (String val: rows) {
+          if (val.equals("X")) {
+          count--;
+          }
+          else if (val.equals("O")) {
+          count++;
+          }
+        if (count == 3) {
+        return "O";  
+        }  
+        if (count == -3) {
+        return "X";   
+        }
+    }   
+ }
+  
+  // Check Coloumns
+  count = 0;
+  for (String[] cols : this.board) {
+      for (String val: cols) {
+          if (val.equals("X")) {
+          count++;   
+          }
+          else if (val.equals("O")) {
+          count--;
+          }
+        if (count == 3) {
+        return "X";  
+        }  
+        if (count == -3) {
+        return "O";   
+        }
+      }
+  }
+ }
 
   @Override
   public void messageHandler(String messageName, Object messagePayload) {
