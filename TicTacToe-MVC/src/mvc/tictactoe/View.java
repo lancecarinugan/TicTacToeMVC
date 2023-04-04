@@ -153,7 +153,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
-        jButton10.setText("jButton10");
+        jButton10.setText("Reset Game");
 
         jLabel2.setText("jLabel2");
 

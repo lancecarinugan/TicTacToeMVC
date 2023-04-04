@@ -52,46 +52,27 @@ public class Model implements MessageHandler {
     this.mvcMessaging.notify("turnChange", this.whoseMove);
   }
   
-  private void isWinner() {
-  int count = 0;
-  // Check Rows
-  for (String[] rows : this.board) {
-      count = 0;
-      for (String val: rows) {
-          if (val.equals("X")) {
-          count--;
-          }
-          else if (val.equals("O")) {
-          count++;
-          }
-        if (count == 3) {
-        return "O";  
-        }  
-        if (count == -3) {
-        return "X";   
+  private String isWinner() {
+          for (int i = 0; i < 3; i++) {
+            if (board[i][0].equals(board[i][1]) && board[i][0].equals(board[i][2]) && !board[i][0].equals("")) {
+                return board [i][0];
+            }
+            if (board[0][i].equals(board[1][i]) && board[0][i].equals(board[2][i]) && !board[0][i].equals(""))  {
+                return board [0][i];
+            }
         }
-    }   
- }
-  
-  // Check Coloumns
-  count = 0;
-  for (String[] cols : this.board) {
-      for (String val: cols) {
-          if (val.equals("X")) {
-          count++;   
-          }
-          else if (val.equals("O")) {
-          count--;
-          }
-        if (count == 3) {
-        return "X";  
-        }  
-        if (count == -3) {
-        return "O";   
+
+        // Check the diagonals
+        if (board[0][0].equals(board[1][1]) && board[0][0].equals(board[2][2])) {
+            return board [0][0];
         }
-      }
-  }
- }
+        if (board[0][2].equals(board[1][1]) && board[0][2].equals(board[2][0])) {
+            return board [0][2];
+        }
+
+        // If we haven't found it, then return a blank string
+        return "";
+    }
 
   @Override
   public void messageHandler(String messageName, Object messagePayload) {
