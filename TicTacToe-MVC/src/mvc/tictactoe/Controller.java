@@ -57,16 +57,8 @@ public class Controller implements MessageHandler {
     // would need to process
     // A sample subscriber call would be like...
     //mvcMessaging.subscribe("view:toggleButtonClick", this);
-      this.newGame();
-      this.mvcMessaging.subscribe("newGameClicked", this);
-      this.mvcMessaging.subscribe("buttonClicked", this);
-      this.mvcMessaging.subscribe("playerMove", this);
-      this.mvcMessaging.subscribe("newGame", this);
   }
   
-  private void newGame() {
-      
-  }
 
   @Override
   public void messageHandler(String messageName, Object messagePayload) {

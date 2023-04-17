@@ -35,7 +35,7 @@ public class Model implements MessageHandler {
     this.mvcMessaging.subscribe("playerMove", this);
     this.mvcMessaging.subscribe("newGame", this);
     this.mvcMessaging.subscribe("resetBoard", this);
-      
+ 
   }
   
   /**
@@ -53,26 +53,58 @@ public class Model implements MessageHandler {
   }
   
   private String isWinner() {
-          for (int i = 0; i < 3; i++) {
-            if (board[i][0].equals(board[i][1]) && board[i][0].equals(board[i][2]) && !board[i][0].equals("")) {
-                return board [i][0];
-            }
-            if (board[0][i].equals(board[1][i]) && board[0][i].equals(board[2][i]) && !board[0][i].equals(""))  {
-                return board [0][i];
-            }
+    int count = 0;
+    // Check the rows
+    for (String[] rows : this.board) {
+        count = 0;
+        if (rows.equals("X")) {
+            count++;
         }
-
-        // Check the diagonals
-        if (board[0][0].equals(board[1][1]) && board[0][0].equals(board[2][2])) {
-            return board [0][0];
+        if (rows.equals("O")) {
+            count--;
         }
-        if (board[0][2].equals(board[1][1]) && board[0][2].equals(board[2][0])) {
-            return board [0][2];
+        if (count == 3) {
+            return "X";
         }
-
-        // If we haven't found it, then return a blank string
-        return "";
+        if (count == -3) {
+            return "O";
+        }
     }
+
+    // Check the columns
+    for (int col = 0; col < this.board[0].length; col++) {
+        count = 0;
+        for (int row = 0; row<this.board.length; row++) {
+            if (board[row][col].equals("X")) {
+                count++;
+            }
+            if (board[row][col].equals("O")) {
+                count--;
+            }
+            if (count == 3) {
+                return "X";
+            }
+            if (count == -3) {
+                return "O";
+            }
+        }
+    }
+    // Check the diagonals
+    if (!this.board[0][0].equals("")) {
+        if (this.board[0][0].equals(this.board[1][1]) && this.board[1][1].equals(this.board[2][2])) {
+            return this.board[0][0];
+        }
+    }
+    if (!this.board[0][2].equals("")) {
+        if (this.board[0][2].equals(this.board[1][1]) && this.board[1][1].equals(this.board[2][0])) {
+           return this.board[0][2];
+        }
+    }
+    if (count == 9) {
+        return "This game was a tie.";
+    }
+    return "";
+}
 
   @Override
   public void messageHandler(String messageName, Object messagePayload) {
@@ -85,6 +117,7 @@ public class Model implements MessageHandler {
     
     // playerMove message handler
     if (messageName.equals("playerMove")) {
+        if (!this.gameOver) {
       // Get the position string and convert to row and col
       String position = (String)messagePayload;
       Integer row = Integer.valueOf(position.substring(0,1));
@@ -99,16 +132,24 @@ public class Model implements MessageHandler {
           this.board[row][col] = "O";
           this.whoseMove = true;
         }
+        this.whoseMove = !this.whoseMove;
         // Send the boardChange message along with the new board 
         this.mvcMessaging.notify("boardChange", this.board);
-      }
+        this.mvcMessaging.notify("turnChange", this.whoseMove);
+        if (!isWinner().equals("")) {
+            String winner = isWinner();
+            this.mvcMessaging.notify("winner", winner);
+            this.gameOver = true;
+        }
+    }
       
     // newGame message handler
-    } else if (messageName.equals("newGame")) {
+    } else if (messageName.equals("newGame") || messageName.equals("newGameClicked")) {
       // Reset the app state
       this.newGame();
       // Send the boardChange message along with the new board 
       this.mvcMessaging.notify("boardChange", this.board);
+            }
+        }
     }
-  }
 }

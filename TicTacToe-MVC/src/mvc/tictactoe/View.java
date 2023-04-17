@@ -30,6 +30,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     // Subscribe to messages here
     this.mvcMessaging.subscribe("boardChange", this);
     this.mvcMessaging.subscribe("gameOver", this);
+    this.mvcMessaging.subscribe("isWinner", this);
   }
   
   @Override
@@ -54,7 +55,15 @@ public class View extends javax.swing.JFrame implements MessageHandler {
       jButton8.setText(board[2][1]);
       jButton9.setText(board[2][2]);
     }
-  }
+    if (messageName.equals("isWinner")) {
+        if ("tie".equals(messagePayload)) {
+            jLabel2.setText((String)messagePayload);
+        }
+        else {
+            jLabel2.setText(messagePayload + " wins");
+        }
+    }
+}
 
   /**
    * Instantiate an object with the field number that was clicked (1 or 2) and
