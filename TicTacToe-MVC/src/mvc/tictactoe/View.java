@@ -31,6 +31,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     this.mvcMessaging.subscribe("boardChange", this);
     this.mvcMessaging.subscribe("gameOver", this);
     this.mvcMessaging.subscribe("isWinner", this);
+    this.mvcMessaging.subscribe("resetBoard", this);
   }
   
   @Override

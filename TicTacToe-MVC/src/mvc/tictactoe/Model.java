@@ -34,7 +34,7 @@ public class Model implements MessageHandler {
     this.newGame();
     this.mvcMessaging.subscribe("playerMove", this);
     this.mvcMessaging.subscribe("newGame", this);
-    this.mvcMessaging.subscribe("resetBoard", this);
+    this.mvcMessaging.subscribe("isWinner", this);
  
   }
   
@@ -66,7 +66,7 @@ public class Model implements MessageHandler {
         if (count == 3) {
             return "X";
         }
-        if (count == -3) {
+        else if (count == -3) {
             return "O";
         }
     }
@@ -84,7 +84,7 @@ public class Model implements MessageHandler {
             if (count == 3) {
                 return "X";
             }
-            if (count == -3) {
+            else if (count == -3) {
                 return "O";
             }
         }
@@ -127,10 +127,8 @@ public class Model implements MessageHandler {
         // ... then set X or O depending on whose move it is
         if (this.whoseMove) {
           this.board[row][col] = "X";
-          this.whoseMove = false;
         } else {
           this.board[row][col] = "O";
-          this.whoseMove = true;
         }
         this.whoseMove = !this.whoseMove;
         // Send the boardChange message along with the new board 
