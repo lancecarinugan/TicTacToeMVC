@@ -58,12 +58,13 @@ public class Model implements MessageHandler {
     private String isWinner() {
         int count = 0;
         // Check the rows
-        for (String[] rows : this.board) {
+        for (String[] rows: this.board) {
             count = 0;
-            if (rows.equals("X")) {
+            for(String val : rows)
+            if (val.equals("X")) {
                 count++;
             }
-            if (rows.equals("O")) {
+            else if (val.equals("O")) {
                 count--;
             }
             if (count == 3) {
@@ -72,6 +73,7 @@ public class Model implements MessageHandler {
                 return "O";
             }
         }
+    
 
         // Check the columns
         for (int col = 0; col < this.board[0].length; col++) {
@@ -101,6 +103,16 @@ public class Model implements MessageHandler {
                 return this.board[0][2];
             }
         }
+        
+        count = 0; 
+        for(String[] rows : this.board) {
+          for(String val : rows) {
+             if(!val.equals("")) {
+                 count++;
+             }
+          }
+        }
+        
         if (count == 9) {
             return "This game was a tie.";
         }
