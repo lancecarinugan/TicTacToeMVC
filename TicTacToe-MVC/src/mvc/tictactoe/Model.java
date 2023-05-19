@@ -36,7 +36,7 @@ public class Model implements MessageHandler {
         this.newGame();
         this.mvcMessaging.subscribe("playerMove", this);
         this.mvcMessaging.subscribe("newGame", this);
-        this.mvcMessaging.subscribe("newGameClicked", this);
+        this.mvcMessaging.subscribe("newGameClick", this);
         this.mvcMessaging.subscribe("isWinner", this);
 
     }
@@ -44,7 +44,7 @@ public class Model implements MessageHandler {
     /**
      * Reset the state for a new game
      */
-    private void newGame() {
+    public void newGame() {
         for (int row = 0; row < this.board.length; row++) {
             for (int col = 0; col < this.board[0].length; col++) {
                 this.board[row][col] = "";
@@ -52,20 +52,20 @@ public class Model implements MessageHandler {
         }
         this.whoseMove = false;
         this.gameOver = false;
-        this.mvcMessaging.notify("turnChange", this.whoseMove);
+        
     }
 
     private String isWinner() {
         int count = 0;
         // Check the rows
-        for (String[] rows: this.board) {
+        for (String[] rows : this.board) {
             count = 0;
-            for(String val : rows)
-            if (val.equals("X")) {
-                count++;
-            }
-            else if (val.equals("O")) {
-                count--;
+            for (String val : rows) {
+                if (val.equals("X")) {
+                    count++;
+                } else if (val.equals("O")) {
+                    count--;
+                }
             }
             if (count == 3) {
                 return "X";
@@ -73,7 +73,6 @@ public class Model implements MessageHandler {
                 return "O";
             }
         }
-    
 
         // Check the columns
         for (int col = 0; col < this.board[0].length; col++) {
@@ -103,16 +102,16 @@ public class Model implements MessageHandler {
                 return this.board[0][2];
             }
         }
-        
-        count = 0; 
-        for(String[] rows : this.board) {
-          for(String val : rows) {
-             if(!val.equals("")) {
-                 count++;
-             }
-          }
+
+        count = 0;
+        for (String[] rows : this.board) {
+            for (String val : rows) {
+                if (!val.equals("")) {
+                    count++;
+                }
+            }
         }
-        
+
         if (count == 9) {
             return "This game was a tie.";
         }
@@ -153,14 +152,12 @@ public class Model implements MessageHandler {
                         mvcMessaging.notify("gameOver", isWinner());
                     }
                 }
-
-                // newGame message handler
-        } else if (messageName.equals("newGame") || messageName.equals("newGameClicked")) {
-                // Reset the app state
-                this.newGame();
-                // Send the boardChange message along with the new board 
-                this.mvcMessaging.notify("boardChange", this.board);
             }
+        } else if (messageName.equals("newGame") || messageName.equals("newGameClick")) {
+            // Reset the app state
+            newGame();
+            // Send the boardChange message along with the new board
+            this.mvcMessaging.notify("boardChange", this.board);
         }
     }
 }
