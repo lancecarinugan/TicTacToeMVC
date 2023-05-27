@@ -36,41 +36,43 @@ public class Model implements MessageHandler {
         this.newGame();
         this.mvcMessaging.subscribe("playerMove", this);
         this.mvcMessaging.subscribe("newGame", this);
-        this.mvcMessaging.subscribe("newGameClick", this);
-        this.mvcMessaging.subscribe("isWinner", this);
-
+        this.mvcMessaging.subscribe("resetBoard", this);
     }
 
     /**
      * Reset the state for a new game
      */
     public void newGame() {
-        for (int row = 0; row < this.board.length; row++) {
+        for (String[] board1 : this.board) {
             for (int col = 0; col < this.board[0].length; col++) {
-                this.board[row][col] = "";
+                board1[col] = "";
             }
         }
         this.whoseMove = false;
         this.gameOver = false;
+        String playerTurn = playerTurn();
+        this.mvcMessaging.notify("playerTurn", playerTurn);
         
     }
 
     private String isWinner() {
         int count = 0;
         // Check the rows
-        for (String[] rows : this.board) {
+        for (String[] board1 : this.board) {
             count = 0;
-            for (String val : rows) {
-                if (val.equals("X")) {
+            for (String rows : board1) {
+                if (rows.equals("X")) {
                     count++;
-                } else if (val.equals("O")) {
+                } 
+                if (rows.equals("O")) {
                     count--;
                 }
-            }
-            if (count == 3) {
+                if (count == 3) {
                 return "X";
-            } else if (count == -3) {
+                }
+                if (count == -3) {
                 return "O";
+                }
             }
         }
 
@@ -104,18 +106,27 @@ public class Model implements MessageHandler {
         }
 
         count = 0;
-        for (String[] rows : this.board) {
-            for (String val : rows) {
-                if (!val.equals("")) {
+        for (String[] board1 : this.board) {
+            for (int col = 0; col<this.board[0].length;col++) {
+                if (!board1[col].equals("")) {
                     count++;
                 }
             }
         }
 
         if (count == 9) {
-            return "This game was a tie.";
+            return "TIE GAME!";
         }
         return "";
+    }
+    
+    private String playerTurn() {
+        if (this.whoseMove == true) {
+            return "X";
+        }
+        else {
+            return "O";
+        }
     }
 
     @Override
@@ -139,23 +150,26 @@ public class Model implements MessageHandler {
                     // ... then set X or O depending on whose move it is
                     if (this.whoseMove) {
                         this.board[row][col] = "X";
+                        this.whoseMove = false;
                     } else {
                         this.board[row][col] = "O";
+                        this.whoseMove = true;
                     }
-                    this.whoseMove = !this.whoseMove;
+                    String playerTurn = playerTurn();
+                    this.mvcMessaging.notify("playerTurn", playerTurn);
                     // Send the boardChange message along with the new board 
                     this.mvcMessaging.notify("boardChange", this.board);
-                    this.mvcMessaging.notify("turnChange", this.whoseMove);
 
                     if (!isWinner().equals("")) {
-                        gameOver = true;
-                        mvcMessaging.notify("gameOver", isWinner());
+                        String isWinner = isWinner();
+                        this.mvcMessaging.notify("isWinner", isWinner);
+                        this.gameOver = true;
                     }
                 }
             }
-        } else if (messageName.equals("newGame") || messageName.equals("newGameClick")) {
+        } else if (messageName.equals("resetBoard") || messageName.equals("newGameClick")) {
             // Reset the app state
-            newGame();
+            this.newGame();
             // Send the boardChange message along with the new board
             this.mvcMessaging.notify("boardChange", this.board);
         }

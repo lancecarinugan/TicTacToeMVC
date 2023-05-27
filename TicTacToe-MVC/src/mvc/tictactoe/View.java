@@ -14,7 +14,6 @@ import javax.swing.JButton;
 public class View extends javax.swing.JFrame implements MessageHandler {
 
     private final Messenger mvcMessaging;
-    private boolean gameOver;
 
     /**
      * Creates a new view
@@ -33,8 +32,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         // Subscribe to messages here
         this.mvcMessaging.subscribe("boardChange", this);
         this.mvcMessaging.subscribe("gameOver", this);
-        this.mvcMessaging.subscribe("newGame", this);
-        gameOver = false;
+        this.mvcMessaging.subscribe("isWinner", this);
+        this.mvcMessaging.subscribe("playerTurn", this);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         } else {
             System.out.println("MSG: received by view: " + messageName + " | No data sent");
         }
-        if (messageName.equals("boardChange") && !gameOver) {
+        if (messageName.equals("boardChange")) {
             // Get the message payload and cast it as a 2D string array since we
             // know that the model is sending out the board data with the message
             String[][] board = (String[][]) messagePayload;
@@ -58,12 +57,19 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             jButton7.setText(board[2][0]);
             jButton8.setText(board[2][1]);
             jButton9.setText(board[2][2]);
-        } else if (messageName.equals("gameOver")) {
-            jLabel2.setText("Game over! " + (messagePayload.toString().equals("draw") ? ("It's a draw!") : (messagePayload.toString() + " Wins!")));
-            gameOver = true;
+        } 
+        
+        if (messageName.equals("playerTurn")) {
+            jLabel2.setText("Player " + messagePayload + "'s turn");
         }
-        else if (messageName.equals("newGameClick")){
-            gameOver = false;
+        
+        else if (messageName.equals("isWinner")) {
+            if ("tie".equals(messagePayload)) {
+                jLabel2.setText((String)messagePayload);
+            }
+            else {
+                jLabel2.setText("Player " + messagePayload + " WINS!");
+            }
         }
     }
 
@@ -101,6 +107,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
 
         jLabel12.setText("TicTacToe");
 
+        jButton1.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton1.setName("00"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,6 +115,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton4.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton4.setName("10"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -115,6 +123,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton7.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton7.setName("20"); // NOI18N
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,6 +131,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton8.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton8.setName("21"); // NOI18N
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -129,6 +139,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton2.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton2.setName("01"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,6 +147,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton5.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton5.setName("11"); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,6 +155,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton3.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton3.setName("02"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,6 +163,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton6.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton6.setName("12"); // NOI18N
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,6 +171,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             }
         });
 
+        jButton9.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
         jButton9.setName("22"); // NOI18N
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -188,8 +203,9 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
                         .addComponent(jLabel2)
-                        .addGap(63, 63, 63)
+                        .addGap(48, 48, 48)
                         .addComponent(newGame))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,19 +257,13 @@ public class View extends javax.swing.JFrame implements MessageHandler {
 
     private void onClick(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onClick
         // TODO add your handling code here:
-        if (gameOver) {
-            return;
-        }
         JButton button = (JButton) evt.getSource();
         this.mvcMessaging.notify("playerMove", button.getName());
-
-
     }//GEN-LAST:event_onClick
 
     private void newGame(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGame
         // TODO add your handling code here:
-        JButton button = (JButton) evt.getSource();
-        this.mvcMessaging.notify("newGameClick", button.getName());
+        this.mvcMessaging.notify("resetBoard");
 
 
     }//GEN-LAST:event_newGame
