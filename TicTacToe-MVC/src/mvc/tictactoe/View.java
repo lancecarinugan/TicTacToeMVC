@@ -64,12 +64,13 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         }
         
         else if (messageName.equals("isWinner")) {
-            if ("tie".equals(messagePayload)) {
-                jLabel2.setText((String)messagePayload);
-            }
-            else {
-                jLabel2.setText("Player " + messagePayload + " WINS!");
-            }
+            jLabel2.setText((messagePayload.toString().equals("TIE GAME!") ? ("TIE GAME!"): "Player " + (messagePayload.toString() + " WINS!")));
+//            if ("tie".equals(messagePayload)) {
+//                jLabel2.setText((String)messagePayload);
+//            }
+//            else {
+//              jLabel2.setText("Player " + messagePayload + " WINS!");
+//            }
         }
     }
 
